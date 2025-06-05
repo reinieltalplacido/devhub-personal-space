@@ -21,7 +21,6 @@ DevHub is a personal productivity and collaboration space built for developers, 
 - 💬 **Notes System** – Write, edit, and store personal notes in-app.
 - 🎯 **Goal Setting** – Set personal goals and track progress.
 - 🌓 **Dark/Light Mode** – Fully responsive with theming options.
-- 🔌 **AI Integration Ready** – Designed to plug in future AI assistants.
 
 ---
 
