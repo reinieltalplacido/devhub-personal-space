@@ -1,15 +1,12 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
-const Landing = () => {
-  const handleGetStarted = () => {
-    // For now, we'll just update the state to show the welcome screen
-    // Later this will redirect to actual auth page
-    window.location.reload();
-  };
+interface LandingProps {
+  onGetStarted: () => void;
+}
 
+const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center max-w-2xl mx-auto px-6">
@@ -22,7 +19,7 @@ const Landing = () => {
         <Button 
           size="lg" 
           className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
-          onClick={handleGetStarted}
+          onClick={onGetStarted}
         >
           Get Started <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
