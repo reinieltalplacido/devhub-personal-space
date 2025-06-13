@@ -24,10 +24,8 @@ const Navbar: React.FC<NavbarProps> = ({
     { name: 'Dashboard', icon: Home, route: '/dashboard' },
     { name: 'Projects', icon: Code, route: '/projects' },
     { name: 'Tasks', icon: CheckCircle, route: '/tasks' },
-    { name: 'Learning', icon: BookOpen, route: '/learning' },
-    { name: 'Timer', icon: Clock, route: '/timer' },
-    { name: 'Calendar', icon: Calendar, route: '/calendar' },
     { name: 'Notes', icon: Target, route: '/notes' },
+    { name: 'Tools', icon: Code, route: '/tools' },
   ];
 
   return (

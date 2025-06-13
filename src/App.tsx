@@ -10,7 +10,8 @@ import React, { useState, useEffect } from 'react';
 import WelcomeScreen from "./components/WelcomeScreen";
 import Navbar from "./components/Navbar";
 import Tasks from "./components/Task";
-import Learning from "./components/Learning";
+import Notes from "./components/Notes";
+import Tools from "./components/Tools";
 
 const queryClient = new QueryClient();
 
@@ -109,16 +110,6 @@ const App = () => {
               }
             />
 
-            {/* Learning - Unconditional MainLayout wrapping Learning */}
-             <Route
-              path="/learning"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Learning userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
-                </MainLayout>
-              }
-            />
-
             {/* Removed Subject Details Route */}
             {/* <Route
               path="/learning/:subjectId"
@@ -128,6 +119,26 @@ const App = () => {
                 </MainLayout>
               }
             /> */}
+
+            {/* Notes - Unconditional MainLayout wrapping Notes */}
+             <Route
+              path="/notes"
+              element={
+                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+                  <Notes userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+                </MainLayout>
+              }
+            />
+
+            {/* Tools - Unconditional MainLayout wrapping Tools */}
+             <Route
+              path="/tools"
+              element={
+                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+                  <Tools userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+                </MainLayout>
+              }
+            />
 
             {/* Basic Catch-all */}
             <Route path="*" element={<NotFound />} />
