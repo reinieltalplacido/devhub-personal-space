@@ -240,7 +240,7 @@ const Notes: React.FC<NotesProps> = ({
           <p className="text-gray-500 mb-6">Create your first note to get started</p>
           <button
             onClick={createNewNote}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
+            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium mx-auto"
           >
             <Plus className="w-5 h-5" />
             Create First Note
@@ -251,303 +251,299 @@ const Notes: React.FC<NotesProps> = ({
   }
 
   return (
-    <div className={`flex-1 flex ${isFullscreen ? 'fixed inset-0 z-50 bg-white' : 'bg-gray-50'}`}>
-      {/* Sidebar */}
-      <div className={`${isFullscreen ? 'hidden' : 'w-80'} bg-white border-r border-gray-200 flex flex-col`}>
-        {/* Sidebar Header */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Notes</h2>
-            <button
-              onClick={createNewNote}
-              className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
+    <div className="flex-1 flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-6 py-4 shadow-sm sticky top-0 z-10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
+                <Home className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-sm text-gray-500">Workspace</span>
+              <ChevronRight className="w-3 h-3 text-gray-400" />
+              <span className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-indigo-500" />
+                Notes
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
+              {/* View mode toggle or other notes-specific controls can go here */}
+            </div>
+            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <Bell className="w-5 h-5" />
+            </button>
+            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <Star className="w-5 h-5" />
+            </button>
+            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <MoreVertical className="w-5 h-5" />
             </button>
           </div>
-          
-          {/* Search */}
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search notes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
         </div>
+      </header>
 
-        {/* Notes List */}
-        <div className="flex-1 overflow-auto">
-          {filteredNotes.map((note) => (
-            <div
-              key={note.id}
-              onClick={() => setActiveNoteId(note.id)}
-              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                activeNoteId === note.id ? 'bg-blue-50 border-blue-200' : ''
-              }`}
+      <div className="flex-1 p-6 overflow-auto">
+        <div className="max-w-7xl mx-auto mb-8 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search notes by title, content, or tags..."
+                className="w-full py-3 pl-12 pr-4 rounded-xl bg-white/70 backdrop-blur-sm border border-gray-200/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800 placeholder-gray-500 shadow-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={createNewNote}
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-medium text-gray-900 truncate flex-1 mr-2">
-                  {note.title}
-                </h3>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(note.id);
-                  }}
-                  className={`p-1 rounded ${note.isFavorite ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-500'}`}
-                >
-                  <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-current' : ''}`} />
-                </button>
-              </div>
-              
-              <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                {note.content.substring(0, 100)}...
-              </p>
-              
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {formatDate(note.updatedAt)}
-                </span>
-                {note.tags.length > 0 && (
-                  <span className="flex items-center gap-1">
-                    <Tag className="w-3 h-3" />
-                    {note.tags.length}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Home className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Workspace</span>
-                <ChevronRight className="w-3 h-3 text-gray-400" />
-                <span className="text-sm font-semibold text-gray-900">Notes</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setIsPreviewMode(!isPreviewMode)}
-                className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
-                title={isPreviewMode ? "Edit mode" : "Preview mode"}
-              >
-                {isPreviewMode ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-              </button>
-              <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
-                title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-              >
-                {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-                <MoreVertical className="w-5 h-5" />
-              </button>
-            </div>
+              <Plus className="w-5 h-5" />
+              New Note
+            </button>
           </div>
-        </header>
+        </div>
 
-        {/* Editor */}
-        {activeNote && (
-          <div className="flex-1 p-6 overflow-auto">
-            <div className="max-w-4xl mx-auto">
-              {/* Title and Actions */}
-              <div className="flex justify-between items-start mb-6">
-                <input
-                  type="text"
-                  className="text-3xl font-bold text-gray-900 focus:outline-none flex-1 bg-transparent border-b-2 border-transparent focus:border-blue-500 pb-2"
-                  value={activeNote.title}
-                  onChange={handleTitleChange}
-                  placeholder="Note title..."
-                />
-                <div className="flex items-center gap-2 ml-4">
+        {/* Notes Content */}
+        <div className="max-w-7xl mx-auto flex h-[calc(100vh-180px)]">
+          {/* Notes List (Left Sidebar) */}
+          <div className="w-80 bg-white/70 backdrop-blur-sm rounded-l-2xl rounded-r-none p-6 border border-r-0 border-gray-200/50 flex flex-col shadow-lg overflow-y-auto">
+            {filteredNotes.map((note) => (
+              <div
+                key={note.id}
+                onClick={() => setActiveNoteId(note.id)}
+                className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                  activeNoteId === note.id ? 'bg-blue-50 border-blue-200' : ''
+                }`}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-medium text-gray-900 truncate flex-1 mr-2">
+                    {note.title}
+                  </h3>
                   <button
-                    onClick={() => toggleFavorite(activeNote.id)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      activeNote.isFavorite 
-                        ? 'text-yellow-500 bg-yellow-50' 
-                        : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
-                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(note.id);
+                    }}
+                    className={`p-1 rounded ${note.isFavorite ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-500'}`}
                   >
-                    <Star className={`w-5 h-5 ${activeNote.isFavorite ? 'fill-current' : ''}`} />
-                  </button>
-                  <button
-                    onClick={() => deleteNote(activeNote.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
+                    <Star className={`w-4 h-4 ${note.isFavorite ? 'fill-current' : ''}`} />
                   </button>
                 </div>
-              </div>
-
-              {/* Tags */}
-              <div className="mb-6">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {activeNote.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-                    >
-                      {tag}
-                      <button
-                        onClick={() => removeTag(tag)}
-                        className="ml-1 text-blue-500 hover:text-blue-700"
-                      >
-                        ×
-                      </button>
+                
+                <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                  {note.content.substring(0, 100)}...
+                </p>
+                
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {formatDate(note.updatedAt)}
+                  </span>
+                  {note.tags.length > 0 && (
+                    <span className="flex items-center gap-1">
+                      <Tag className="w-3 h-3" />
+                      {note.tags.length}
                     </span>
-                  ))}
-                  {showTagInput ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={newTag}
-                        onChange={(e) => setNewTag(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') addTag();
-                          if (e.key === 'Escape') {
-                            setShowTagInput(false);
-                            setNewTag('');
-                          }
-                        }}
-                        placeholder="Add tag..."
-                        className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        autoFocus
-                      />
-                      <button
-                        onClick={addTag}
-                        className="px-2 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowTagInput(true)}
-                      className="px-3 py-1 border border-gray-300 rounded-full text-sm text-gray-500 hover:bg-gray-50 transition-colors"
-                    >
-                      + Add tag
-                    </button>
                   )}
                 </div>
               </div>
-
-              {/* Formatting Toolbar */}
-              {!isPreviewMode && (
-                <div className="border border-gray-200 rounded-lg p-3 mb-4 bg-gray-50">
-                  <div className="flex items-center gap-1 flex-wrap">
-                    <button
-                      onClick={() => applyFormatting('bold')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Bold"
-                    >
-                      <Bold className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => applyFormatting('italic')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Italic"
-                    >
-                      <Italic className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => applyFormatting('underline')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Underline"
-                    >
-                      <Underline className="w-4 h-4" />
-                    </button>
-                    <div className="border-l border-gray-300 h-6 mx-2"></div>
-                    <button
-                      onClick={() => applyFormatting('heading')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Heading"
-                    >
-                      <Heading className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => applyFormatting('list')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="List"
-                    >
-                      <List className="w-4 h-4" />
-                    </button>
-                    <div className="border-l border-gray-300 h-6 mx-2"></div>
-                    <button
-                      onClick={() => applyFormatting('link')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Link"
-                    >
-                      <LinkIcon className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => applyFormatting('code')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Code"
-                    >
-                      <Code className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => applyFormatting('quote')}
-                      className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
-                      title="Quote"
-                    >
-                      <Quote className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Content Area */}
-              <div className="bg-white rounded-lg border border-gray-200 min-h-96">
-                {isPreviewMode ? (
-                  <div className="p-6 prose max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {activeNote.content}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  <textarea
-                    ref={textareaRef}
-                    className="w-full p-6 text-gray-800 focus:outline-none resize-none border-none rounded-lg min-h-96 leading-relaxed"
-                    value={activeNote.content}
-                    onChange={handleContentChange}
-                    placeholder="Start writing your note..."
-                  />
-                )}
-              </div>
-
-              {/* Footer Info */}
-              <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-                <div className="flex items-center gap-4">
-                  <span>Created: {formatDate(activeNote.createdAt)}</span>
-                  <span>Updated: {formatDate(activeNote.updatedAt)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>{activeNote.content.length} characters</span>
-                  <span>•</span>
-                  <span>{activeNote.content.split(/\s+/).filter(Boolean).length} words</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        )}
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col">
+            {/* Editor */}
+            {activeNote && (
+              <div className="flex-1 p-6 overflow-auto">
+                <div className="max-w-4xl mx-auto">
+                  {/* Title and Actions */}
+                  <div className="flex justify-between items-start mb-6">
+                    <input
+                      type="text"
+                      className="text-3xl font-bold text-gray-900 focus:outline-none flex-1 bg-transparent border-b-2 border-transparent focus:border-blue-500 pb-2"
+                      value={activeNote.title}
+                      onChange={handleTitleChange}
+                      placeholder="Note title..."
+                    />
+                    <div className="flex items-center gap-2 ml-4">
+                      <button
+                        onClick={() => toggleFavorite(activeNote.id)}
+                        className={`p-2 rounded-lg transition-colors ${
+                          activeNote.isFavorite 
+                            ? 'text-yellow-500 bg-yellow-50' 
+                            : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
+                        }`}
+                      >
+                        <Star className={`w-5 h-5 ${activeNote.isFavorite ? 'fill-current' : ''}`} />
+                      </button>
+                      <button
+                        onClick={() => deleteNote(activeNote.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mb-6">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {activeNote.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                        >
+                          {tag}
+                          <button
+                            onClick={() => removeTag(tag)}
+                            className="ml-1 text-blue-500 hover:text-blue-700"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                      {showTagInput ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={newTag}
+                            onChange={(e) => setNewTag(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') addTag();
+                              if (e.key === 'Escape') {
+                                setShowTagInput(false);
+                                setNewTag('');
+                              }
+                            }}
+                            placeholder="Add tag..."
+                            className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            autoFocus
+                          />
+                          <button
+                            onClick={addTag}
+                            className="px-2 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setShowTagInput(true)}
+                          className="px-3 py-1 border border-gray-300 rounded-full text-sm text-gray-500 hover:bg-gray-50 transition-colors"
+                        >
+                          + Add tag
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Formatting Toolbar */}
+                  {!isPreviewMode && (
+                    <div className="border border-gray-200 rounded-lg p-3 mb-4 bg-gray-50">
+                      <div className="flex items-center gap-1 flex-wrap">
+                        <button
+                          onClick={() => applyFormatting('bold')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Bold"
+                        >
+                          <Bold className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => applyFormatting('italic')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Italic"
+                        >
+                          <Italic className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => applyFormatting('underline')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Underline"
+                        >
+                          <Underline className="w-4 h-4" />
+                        </button>
+                        <div className="border-l border-gray-300 h-6 mx-2"></div>
+                        <button
+                          onClick={() => applyFormatting('heading')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Heading"
+                        >
+                          <Heading className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => applyFormatting('list')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="List"
+                        >
+                          <List className="w-4 h-4" />
+                        </button>
+                        <div className="border-l border-gray-300 h-6 mx-2"></div>
+                        <button
+                          onClick={() => applyFormatting('link')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Link"
+                        >
+                          <LinkIcon className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => applyFormatting('code')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Code"
+                        >
+                          <Code className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => applyFormatting('quote')}
+                          className="p-2 hover:bg-white rounded-md text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Quote"
+                        >
+                          <Quote className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Content Area */}
+                  <div className="bg-white rounded-lg border border-gray-200 min-h-96">
+                    {isPreviewMode ? (
+                      <div className="p-6 prose max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {activeNote.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <textarea
+                        ref={textareaRef}
+                        className="w-full p-6 text-gray-800 focus:outline-none resize-none border-none rounded-lg min-h-96 leading-relaxed"
+                        value={activeNote.content}
+                        onChange={handleContentChange}
+                        placeholder="Start writing your note..."
+                      />
+                    )}
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center gap-4">
+                      <span>Created: {formatDate(activeNote.createdAt)}</span>
+                      <span>Updated: {formatDate(activeNote.updatedAt)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>{activeNote.content.length} characters</span>
+                      <span>•</span>
+                      <span>{activeNote.content.split(/\s+/).filter(Boolean).length} words</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

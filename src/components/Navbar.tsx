@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Code, Search, User,
   ChevronDown, Plus, MoreVertical, Home,
-  CheckCircle, BookOpen, Clock, Target, ChevronRight, Calendar
+  CheckCircle, BookOpen, Clock, Target, ChevronRight, Calendar, Sparkles, FileText
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -24,8 +24,8 @@ const Navbar: React.FC<NavbarProps> = ({
     { name: 'Dashboard', icon: Home, route: '/dashboard' },
     { name: 'Projects', icon: Code, route: '/projects' },
     { name: 'Tasks', icon: CheckCircle, route: '/tasks' },
-    { name: 'Notes', icon: Target, route: '/notes' },
-    { name: 'Tools', icon: Code, route: '/tools' },
+    { name: 'Notes', icon: FileText, route: '/notes' },
+    { name: 'Tools', icon: Sparkles, route: '/tools' },
   ];
 
   return (
@@ -94,23 +94,6 @@ const Navbar: React.FC<NavbarProps> = ({
             </div>
           ))}
         </nav>
-
-        {/* Quick Actions */}
-        {sidebarExpanded && (
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <div className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-3 px-3">Quick Add</div>
-            <div className="space-y-1">
-              <button className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors">
-                <Plus className="w-4 h-4" />
-                <span>New Task</span>
-              </button>
-              <button className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors">
-                <Plus className="w-4 h-4" />
-                <span>New Note</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* User Section */}

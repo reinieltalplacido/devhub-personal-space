@@ -1,55 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Dispatch, SetStateAction } from 'react';
-import { Home, ChevronRight, Bell, Star, MoreVertical, Plus, Trash2, Edit } from '@geist-ui/icons'; // Import Trash2 and Edit icons
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import {
+  Home, ChevronRight, Bell, Star, MoreVertical, Plus, Trash2, Edit, CheckCircle, Search
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Task {
   id: string;
   description: string;
   status: 'todo' | 'in-progress' | 'done';
-  title?: string; // Added title field
-  dueDate?: string; // Added dueDate field
-  notes?: string; // Added notes field
+  title?: string;
+  dueDate?: string;
+  notes?: string;
 }
 
 interface TasksProps {
   userName: string;
   sidebarExpanded: boolean;
-  setSidebarExpanded: Dispatch<SetStateAction<boolean>>; // Include if sidebar state is managed here
+  setSidebarExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
 const Tasks: React.FC<TasksProps> = ({
-  userName, // Assuming userName might be used in the header/layout
-  sidebarExpanded, // Assuming sidebar state might affect layout
-  setSidebarExpanded, // Assuming sidebar state might be toggled from here
+  userName,
+  sidebarExpanded,
+  setSidebarExpanded,
 }) => {
-  // State to hold the tasks, initialized from local storage
   const [tasks, setTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem('tasks');
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
-  const [newTaskDescription, setNewTaskDescription] = useState('');
-  const [showDetailsModal, setShowDetailsModal] = useState(false); // State for details modal visibility
-  const [selectedTaskDetails, setSelectedTaskDetails] = useState<Task | null>(null); // State to hold task being viewed/edited
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedTaskDetails, setSelectedTaskDetails] = useState<Task | null>(null);
 
-  // Effect to save tasks to local storage whenever the tasks state changes
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
   const handleAddTask = () => {
-    if (newTaskDescription.trim()) {
-      const newTask: Task = {
-        id: Date.now().toString(),
-        description: newTaskDescription.trim(),
-        status: 'todo', // Default status is 'todo'
-        title: '', // Initialize new fields
-        dueDate: '',
-        notes: '',
-      };
-      setTasks([...tasks, newTask]);
-      setNewTaskDescription('');
-    }
+    const newTask: Task = {
+      id: Date.now().toString(),
+      description: '', // Start with empty description
+      status: 'todo',
+      title: '',
+      dueDate: '',
+      notes: '',
+    };
+    setSelectedTaskDetails(newTask);
+    setShowDetailsModal(true);
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -62,7 +59,7 @@ const Tasks: React.FC<TasksProps> = ({
   };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent, newStatus: Task['status']) => {
@@ -74,26 +71,32 @@ const Tasks: React.FC<TasksProps> = ({
     ));
   };
 
-  // Function to handle clicking a task to view/edit details
   const handleTaskClick = (task: Task) => {
     setSelectedTaskDetails(task);
     setShowDetailsModal(true);
   };
 
-  // Function to handle changes in the details modal
   const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setSelectedTaskDetails(prevState => prevState ? { ...prevState, [name]: value } : null);
   };
 
-  // Function to save changes from the details modal
   const handleSaveDetails = () => {
     if (selectedTaskDetails) {
-      setTasks(tasks.map(task => 
-        task.id === selectedTaskDetails.id ? selectedTaskDetails : task
-      ));
+      setTasks(prevTasks => {
+        const existingTaskIndex = prevTasks.findIndex(task => task.id === selectedTaskDetails.id);
+        if (existingTaskIndex > -1) {
+          // Update existing task
+          return prevTasks.map(task => 
+            task.id === selectedTaskDetails.id ? selectedTaskDetails : task
+          );
+        } else {
+          // Add new task
+          return [...prevTasks, selectedTaskDetails];
+        }
+      });
       setShowDetailsModal(false);
-      setSelectedTaskDetails(null); // Clear selected task
+      setSelectedTaskDetails(null);
     }
   };
 
@@ -102,83 +105,68 @@ const Tasks: React.FC<TasksProps> = ({
   const tasksDone = tasks.filter(task => task.status === 'done');
 
   return (
-    // The content should be wrapped in a single element, typically a div or fragment,
-    // to be rendered inside MainLayout (if you are using one).
-    <>
-      {/* Main Content Area Wrapper */}
+    <div className="flex-1 flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* Top Bar */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
+        <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-6 py-4 shadow-sm sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <Home className="w-4 h-4 text-gray-500" />
-                {/* Link to Dashboard/Workspace */}
-                <Link to="/" className="text-sm text-gray-500 hover:underline">Workspace</Link>
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
+                  <Home className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm text-gray-500">Workspace</span>
                 <ChevronRight className="w-3 h-3 text-gray-400" />
-                {/* Display current page/section */}
-                <span className="text-sm font-semibold text-gray-900">Tasks</span>
+                <span className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-indigo-500" />
+                  Tasks
+                </span>
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
+              </div>
+              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
                 <Bell className="w-5 h-5" />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
                 <Star className="w-5 h-5" />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
+              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
                 <MoreVertical className="w-5 h-5" />
               </button>
             </div>
           </div>
         </header>
 
-        {/* Tasks Content */}
-        <main className="flex-1 overflow-auto bg-gray-50 p-8">
+        <main className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Task Board</h1>
 
-            {/* Add New Task */}
-            <div className="flex mb-6">
-              <input
-                type="text"
-                placeholder="Add a new task..."
-                value={newTaskDescription}
-                onChange={(e) => setNewTaskDescription(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddTask();
-                  }
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-end mb-6">
               <button
                 onClick={handleAddTask}
-                className="px-6 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors flex items-center"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium"
               >
-                <Plus className="w-5 h-5 mr-2" /> Add Task
+                <Plus className="w-5 h-5" />
+                Add Task
               </button>
             </div>
 
-            {/* Task Columns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-              {/* To Do Column */}
               <div 
-                className="bg-gray-100 rounded-lg p-4 shadow-inner"
+                className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, 'todo')}
               >
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">To Do ({tasksTodo.length})</h2>
-                <div className="space-y-3">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">To Do ({tasksTodo.length})</h2>
+                <div className="space-y-4">
                   {tasksTodo.map(task => (
                     <div
                       key={task.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-grab flex justify-between items-center"
+                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
                     >
                       <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
@@ -186,10 +174,10 @@ const Tasks: React.FC<TasksProps> = ({
                          {task.dueDate && <p className="text-xs text-gray-500 mt-1">Due: {task.dueDate}</p>}
                       </div>
                        <div className="flex items-center space-x-2">
-                          <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600">
+                          <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Edit className="w-4 h-4" />
                            </button>
-                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600">
+                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Trash2 className="w-4 h-4" />
                            </button>
                        </div>
@@ -198,20 +186,19 @@ const Tasks: React.FC<TasksProps> = ({
                 </div>
               </div>
 
-              {/* In Progress Column */}
               <div 
-                className="bg-blue-100 rounded-lg p-4 shadow-inner"
+                className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, 'in-progress')}
               >
-                <h2 className="text-xl font-semibold text-blue-800 mb-4">In Progress ({tasksInProgress.length})</h2>
-                <div className="space-y-3">
+                <h2 className="text-xl font-semibold text-indigo-800 mb-4">In Progress ({tasksInProgress.length})</h2>
+                <div className="space-y-4">
                    {tasksInProgress.map(task => (
                     <div
                       key={task.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-grab flex justify-between items-center"
+                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
                     >
                        <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
@@ -219,10 +206,10 @@ const Tasks: React.FC<TasksProps> = ({
                          {task.dueDate && <p className="text-xs text-gray-500 mt-1">Due: {task.dueDate}</p>}
                       </div>
                        <div className="flex items-center space-x-2">
-                          <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600">
+                          <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Edit className="w-4 h-4" />
                            </button>
-                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600">
+                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Trash2 className="w-4 h-4" />
                            </button>
                        </div>
@@ -231,20 +218,19 @@ const Tasks: React.FC<TasksProps> = ({
                 </div>
               </div>
 
-              {/* Done Column */}
               <div 
-                className="bg-green-100 rounded-lg p-4 shadow-inner"
+                className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, 'done')}
               >
                 <h2 className="text-xl font-semibold text-green-800 mb-4">Done ({tasksDone.length})</h2>
-                 <div className="space-y-3">
+                 <div className="space-y-4">
                    {tasksDone.map(task => (
                     <div
                       key={task.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-grab flex justify-between items-center"
+                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
                     >
                        <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
@@ -252,10 +238,10 @@ const Tasks: React.FC<TasksProps> = ({
                          {task.dueDate && <p className="text-xs text-gray-500 mt-1">Due: {task.dueDate}</p>}
                       </div>
                        <div className="flex items-center space-x-2">
-                           <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600">
+                           <button onClick={() => handleTaskClick(task)} className="text-gray-500 hover:text-blue-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Edit className="w-4 h-4" />
                            </button>
-                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600">
+                           <button onClick={() => handleDeleteTask(task.id)} className="text-gray-500 hover:text-red-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
                               <Trash2 className="w-4 h-4" />
                            </button>
                        </div>
@@ -264,45 +250,48 @@ const Tasks: React.FC<TasksProps> = ({
                 </div>
               </div>
 
-            </div> {/* End Task Columns */}
+            </div>
 
-          </div> {/* End max-w-7xl mx-auto */}
+          </div>
         </main>
-      </div> {/* End Main Content Area Wrapper */}
+      </div>
 
-      {/* Task Details Modal */}
       {showDetailsModal && selectedTaskDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Task Details</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Edit className="w-6 h-6 text-indigo-600" />
+              Task Details
+            </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 <input
                   type="text"
                   name="title"
                   value={selectedTaskDetails.title || ''}
                   onChange={handleDetailChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Task title"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <textarea
                   name="description"
                   value={selectedTaskDetails.description}
                   onChange={handleDetailChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows={3}
-                />
+                  placeholder="Detailed description of the task"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors h-24 resize-y"
+                ></textarea>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select
                   name="status"
                   value={selectedTaskDetails.status}
                   onChange={handleDetailChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                 >
                   <option value="todo">To Do</option>
                   <option value="in-progress">In Progress</option>
@@ -310,39 +299,39 @@ const Tasks: React.FC<TasksProps> = ({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Due Date (Optional)</label>
                 <input
                   type="date"
                   name="dueDate"
                   value={selectedTaskDetails.dueDate || ''}
                   onChange={handleDetailChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                 />
               </div>
-               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
                 <textarea
                   name="notes"
                   value={selectedTaskDetails.notes || ''}
                   onChange={handleDetailChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows={3}
-                />
+                  placeholder="Any additional notes for this task"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors h-24 resize-y"
+                ></textarea>
               </div>
             </div>
-            <div className="flex justify-end space-x-3 mt-6">
+            <div className="flex gap-3 mt-8">
               <button
                 onClick={() => {
                   setShowDetailsModal(false);
-                  setSelectedTaskDetails(null); // Clear selected task
+                  setSelectedTaskDetails(null);
                 }}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveDetails}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md font-medium"
               >
                 Save Changes
               </button>
@@ -350,7 +339,7 @@ const Tasks: React.FC<TasksProps> = ({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
