@@ -47,13 +47,10 @@ const MainLayout: React.FC<{ userName: string; sidebarExpanded: boolean; setSide
   );
 };
 
-const App = () => {
+const AppRoutes: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  // Remove window.location.assign
-
-  // Use useNavigate for client-side navigation
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,80 +81,66 @@ const App = () => {
     );
   }
 
-  // Temporary Debugging Setup - Unconditional Routing
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Landing as root route */}
-            <Route path="/" element={<Landing onGetStarted={handleGetStarted} />} />
-            {/* Welcome Screen - Unconditional */}
-            <Route path="/welcome" element={<WelcomeScreen onUserSetup={handleUserSetup} />} />
-            {/* Dashboard - Unconditional MainLayout wrapping DevHubDashboard */}
-            <Route
-              path="/dashboard"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <DevHubDashboard userName={userName || "Test User"} />
-                </MainLayout>
-              }
-            />
-            {/* Projects - Unconditional MainLayout wrapping Projects */}
-             <Route
-              path="/projects"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Projects userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
-                </MainLayout>
-              }
-            />
-            {/* Tasks - Unconditional MainLayout wrapping Tasks */}
-             <Route
-              path="/tasks"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Tasks userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
-                </MainLayout>
-              }
-            />
-            {/* Removed Subject Details Route */}
-            {/* <Route
-              path="/learning/:subjectId"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <SubjectDetails userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
-                </MainLayout>
-              }
-            /> */}
-            {/* Notes - Unconditional MainLayout wrapping Notes */}
-             <Route
-              path="/notes"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Notes userName={userName || "Test User"} />
-                </MainLayout>
-              }
-            />
-            {/* Tools - Unconditional MainLayout wrapping Tools */}
-             <Route
-              path="/tools"
-              element={
-                <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Tools userName={userName || "Test User"} />
-                </MainLayout>
-              }
-            />
-            {/* Basic Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-      <Analytics />
-    </QueryClientProvider>
+    <Routes>
+      <Route path="/" element={<Landing onGetStarted={handleGetStarted} />} />
+      <Route path="/welcome" element={<WelcomeScreen onUserSetup={handleUserSetup} />} />
+      <Route
+        path="/dashboard"
+        element={
+          <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+            <DevHubDashboard userName={userName || "Test User"} />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+            <Projects userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/tasks"
+        element={
+          <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+            <Tasks userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/notes"
+        element={
+          <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+            <Notes userName={userName || "Test User"} />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/tools"
+        element={
+          <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
+            <Tools userName={userName || "Test User"} />
+          </MainLayout>
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+      <Analytics />
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
