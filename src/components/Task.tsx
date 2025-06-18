@@ -31,10 +31,16 @@ const Tasks: React.FC<TasksProps> = ({
   });
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState<Task | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAddTask = () => {
     const newTask: Task = {
@@ -123,18 +129,9 @@ const Tasks: React.FC<TasksProps> = ({
                 </span>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
-              </div>
-              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
-              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-                <Star className="w-5 h-5" />
-              </button>
-              <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+            <div className="text-right">
+              <div className="text-lg font-mono text-gray-700">{currentTime.toLocaleTimeString()}</div>
+              <div className="text-xs text-gray-500">{currentTime.toLocaleDateString()}</div>
             </div>
           </div>
         </header>

@@ -58,18 +58,7 @@ const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Search */}
-      {sidebarExpanded && (
-        <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full bg-gray-50 text-gray-900 pl-9 pr-3 py-2.5 rounded-lg border-0 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm"
-            />
-          </div>
-        </div>
-      )}
+      {/* Removed search bar from sidebar for relocation to Topbar */}
 
       {/* Navigation */}
       <div className="flex-1 px-3">

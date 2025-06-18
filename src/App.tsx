@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar";
 import Tasks from "./components/Task";
 import Notes from "./components/Notes";
 import Tools from "./components/Tools";
+import Topbar from "./components/Topbar";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,11 @@ const MainLayout: React.FC<{ userName: string; sidebarExpanded: boolean; setSide
   setSidebarExpanded,
   children, // Accept children
 }) => {
+  // Add search handler (can be expanded later)
+  // const handleSearch = (value: string) => {
+  //   // For now, just log the search value
+  //   console.log("Search:", value);
+  // };
   return (
     <div className="flex h-screen bg-gray-50">
       <Navbar
@@ -31,8 +37,9 @@ const MainLayout: React.FC<{ userName: string; sidebarExpanded: boolean; setSide
         setSidebarExpanded={setSidebarExpanded}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Removed Topbar from here */}
         {/* Main Content Area - Render children here */}
-        {children} 
+        {children}
       </div>
     </div>
   );
@@ -85,7 +92,7 @@ const App = () => {
               path="/dashboard"
               element={
                 <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <DevHubDashboard userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+                  <DevHubDashboard userName={userName || "Test User"} />
                 </MainLayout>
               }
             />
@@ -125,7 +132,7 @@ const App = () => {
               path="/notes"
               element={
                 <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Notes userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+                  <Notes userName={userName || "Test User"} />
                 </MainLayout>
               }
             />
@@ -135,7 +142,7 @@ const App = () => {
               path="/tools"
               element={
                 <MainLayout userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded}>
-                  <Tools userName={userName || "Test User"} sidebarExpanded={sidebarExpanded} setSidebarExpanded={setSidebarExpanded} />
+                  <Tools userName={userName || "Test User"} />
                 </MainLayout>
               }
             />

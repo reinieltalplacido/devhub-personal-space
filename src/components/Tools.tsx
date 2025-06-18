@@ -44,6 +44,7 @@ const Tools: React.FC<ToolsProps> = ({
   const [customCategories, setCustomCategories] = useState<string[]>(['Development', 'Design', 'Productivity', 'Analytics', 'Communication', 'Other']);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Load tools and categories from local storage on component mount
   useEffect(() => {
@@ -78,6 +79,11 @@ const Tools: React.FC<ToolsProps> = ({
       setNewToolCategory('Development');
     }
   }, [customCategories, newToolCategory]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAddTool = () => {
     if (newToolUrl.trim() && newToolTitle.trim()) {
@@ -161,7 +167,8 @@ const Tools: React.FC<ToolsProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
+          {/* Grid/List Toggle and Time */}
+          <div className="flex items-center space-x-4">
             <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
               <button
                 onClick={() => setViewMode('grid')}
@@ -176,15 +183,10 @@ const Tools: React.FC<ToolsProps> = ({
                 <List className="w-4 h-4" />
               </button>
             </div>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Star className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <MoreVertical className="w-5 h-5" />
-            </button>
+            <div className="text-right">
+              <div className="text-lg font-mono text-gray-700">{currentTime.toLocaleTimeString()}</div>
+              <div className="text-xs text-gray-500">{currentTime.toLocaleDateString()}</div>
+            </div>
           </div>
         </div>
       </header>

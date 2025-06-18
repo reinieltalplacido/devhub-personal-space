@@ -22,6 +22,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
   const [tasks, setTasks] = useState<any[]>([]);
   const [notes, setNotes] = useState<any[]>([]);
   const [tools, setTools] = useState<any[]>([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     const loadData = () => {
@@ -48,6 +49,11 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
     return () => {
       window.removeEventListener('storage', loadData);
     };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const firstName = userName.split(' ')[0];
@@ -148,24 +154,9 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search workspace..."
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-            </div>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Star className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <MoreVertical className="w-5 h-5" />
-            </button>
+          <div className="text-right">
+            <div className="text-lg font-mono text-gray-700">{currentTime.toLocaleTimeString()}</div>
+            <div className="text-xs text-gray-500">{currentTime.toLocaleDateString()}</div>
           </div>
         </div>
       </header>

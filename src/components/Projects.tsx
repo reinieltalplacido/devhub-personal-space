@@ -50,6 +50,13 @@ const Projects: React.FC<ProjectsProps> = ({
     notes: '',
   });
 
+  // Add time/date state
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Effect to save projects to local storage whenever the projects state changes
   useEffect(() => {
     localStorage.setItem('projects', JSON.stringify(projects));
@@ -125,19 +132,10 @@ const Projects: React.FC<ProjectsProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
-              {/* View mode toggle or other project-specific controls can go here */}
-            </div>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <Star className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-white/50 rounded-lg text-gray-500 hover:text-gray-700 transition-colors">
-              <MoreVertical className="w-5 h-5" />
-            </button>
+          {/* Time and Date Display */}
+          <div className="text-right">
+            <div className="text-lg font-mono text-gray-700">{currentTime.toLocaleTimeString()}</div>
+            <div className="text-xs text-gray-500">{currentTime.toLocaleDateString()}</div>
           </div>
         </div>
       </header>
