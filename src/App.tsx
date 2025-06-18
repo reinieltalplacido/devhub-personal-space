@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import DevHubDashboard from "./components/DevHubDashboard";
 import Projects from "./components/Projects";
@@ -14,6 +14,7 @@ import Notes from "./components/Notes";
 import Tools from "./components/Tools";
 import Topbar from "./components/Topbar";
 import Landing from "./pages/Landing";
+import { Analytics } from '@vercel/analytics/react';
 
 const queryClient = new QueryClient();
 
@@ -50,10 +51,12 @@ const App = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const navigate = window.location.assign;
+  // Remove window.location.assign
+
+  // Use useNavigate for client-side navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Keep user loading logic, but routing will be unconditional for now
     const storedName = localStorage.getItem('devhub_user_name');
     if (storedName) {
       setUserName(storedName);
@@ -61,14 +64,16 @@ const App = () => {
     setIsLoading(false);
   }, []);
 
+  // Handler for WelcomeScreen user setup
   const handleUserSetup = (name: string) => {
     localStorage.setItem('devhub_user_name', name);
     setUserName(name);
+    navigate('/dashboard');
   };
 
   // Handler for Landing page Get Started
   const handleGetStarted = () => {
-    window.location.assign('/welcome');
+    navigate('/welcome');
   };
 
   if (isLoading) {
@@ -150,6 +155,7 @@ const App = () => {
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      <Analytics />
     </QueryClientProvider>
   );
 };
