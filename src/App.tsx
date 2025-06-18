@@ -13,6 +13,7 @@ import Tasks from "./components/Task";
 import Notes from "./components/Notes";
 import Tools from "./components/Tools";
 import Topbar from "./components/Topbar";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const navigate = window.location.assign;
 
   useEffect(() => {
     // Keep user loading logic, but routing will be unconditional for now
@@ -62,6 +64,11 @@ const App = () => {
   const handleUserSetup = (name: string) => {
     localStorage.setItem('devhub_user_name', name);
     setUserName(name);
+  };
+
+  // Handler for Landing page Get Started
+  const handleGetStarted = () => {
+    window.location.assign('/welcome');
   };
 
   if (isLoading) {
@@ -80,14 +87,11 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Redirect root to dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
+            {/* Landing as root route */}
+            <Route path="/" element={<Landing onGetStarted={handleGetStarted} />} />
             {/* Welcome Screen - Unconditional */}
             <Route path="/welcome" element={<WelcomeScreen onUserSetup={handleUserSetup} />} />
-
             {/* Dashboard - Unconditional MainLayout wrapping DevHubDashboard */}
-            {/* This tests if MainLayout can render DevHubDashboard at /dashboard */}
             <Route
               path="/dashboard"
               element={
@@ -96,7 +100,6 @@ const App = () => {
                 </MainLayout>
               }
             />
-
             {/* Projects - Unconditional MainLayout wrapping Projects */}
              <Route
               path="/projects"
@@ -106,7 +109,6 @@ const App = () => {
                 </MainLayout>
               }
             />
-
             {/* Tasks - Unconditional MainLayout wrapping Tasks */}
              <Route
               path="/tasks"
@@ -116,7 +118,6 @@ const App = () => {
                 </MainLayout>
               }
             />
-
             {/* Removed Subject Details Route */}
             {/* <Route
               path="/learning/:subjectId"
@@ -126,7 +127,6 @@ const App = () => {
                 </MainLayout>
               }
             /> */}
-
             {/* Notes - Unconditional MainLayout wrapping Notes */}
              <Route
               path="/notes"
@@ -136,7 +136,6 @@ const App = () => {
                 </MainLayout>
               }
             />
-
             {/* Tools - Unconditional MainLayout wrapping Tools */}
              <Route
               path="/tools"
@@ -146,10 +145,8 @@ const App = () => {
                 </MainLayout>
               }
             />
-
             {/* Basic Catch-all */}
             <Route path="*" element={<NotFound />} />
-
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
