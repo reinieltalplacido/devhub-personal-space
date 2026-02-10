@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 // import Navbar from './Navbar';
 import { Dispatch, SetStateAction } from 'react';
 import {
-  Home, ChevronRight, Bell, Star, MoreVertical, Plus, Search, Filter, Edit, Trash2, Eye, Code
+  Home, ChevronRight, Bell, Star, MoreVertical, Plus, Search, Filter, Edit, Trash2, Eye, Code, Rocket, Sparkles
 } from 'lucide-react'; // Changed to lucide-react
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link, useNavigate } from 'react-router-dom'; // Import Link for navigation
 
 interface Project {
   id: string;
@@ -28,6 +28,7 @@ const Projects: React.FC<ProjectsProps> = ({
   sidebarExpanded,
   setSidebarExpanded,
 }) => {
+  const navigate = useNavigate();
   // State to hold the projects, initialized from local storage
   const [projects, setProjects] = useState<Project[]>(() => {
     const savedProjects = localStorage.getItem('projects');
@@ -169,13 +170,35 @@ const Projects: React.FC<ProjectsProps> = ({
 
           {/* Projects List */}
           {filteredProjects.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No projects yet. Get started by creating your first one!</p>
+            <div className="text-center py-16 animate-fade-in">
+              <div>
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Rocket className="w-12 h-12 text-indigo-600" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3">No Projects Yet</h3>
+              <p className="text-gray-600 mb-8 max-w-md mx-auto">Start building something amazing! Create your first project to get started.</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium mx-auto"
+                >
+                  <Plus className="w-5 h-5" />
+                  Create First Project
+                </button>
+                <button
+                  onClick={() => navigate('/tasks')}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mx-auto flex items-center gap-2"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Browse Tasks Instead
+                </button>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              {filteredProjects.map((project, index) => (
+                <div key={project.id} className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover-lift animate-fade-in animate-stagger-${Math.min(index + 1, 4)}`}>
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
                     <div className="flex space-x-2">

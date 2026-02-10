@@ -6,8 +6,9 @@ import {
   MoreVertical, Filter, ArrowUpRight, Activity, Home,
   ChevronRight, Star, Archive, Trash,
   Sun, Moon, Sparkles, Code, CheckSquare, FileText, Wrench,
-  Calendar, Clock, TrendingUp, Target, BookOpen, Zap
+  Calendar, Clock, TrendingUp, Target, BookOpen, Zap, Rocket, Coffee
 } from 'lucide-react';
+import EmptyState from './EmptyState';
 
 interface DevHubDashboardProps {
   userName?: string;
@@ -180,7 +181,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               {quickStats.map((stat, index) => (
                 <div 
                   key={index} 
-                  className={`${stat.color} p-6 rounded-xl border hover:shadow-lg transition-all duration-200 cursor-pointer group`}
+                  className={`${stat.color} p-6 rounded-xl border hover:shadow-lg transition-all duration-200 cursor-pointer group hover-lift animate-fade-in animate-stagger-${index + 1}`}
                   onClick={() => navigate(stat.route)}
                 >
                   <div className="flex items-center justify-between mb-4">
@@ -219,18 +220,30 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               </div>
               
               {todayTasks.length === 0 ? (
-                <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckSquare className="w-8 h-8 text-gray-400" />
+                <div className="bg-white rounded-xl border border-gray-200 p-10 text-center animate-fade-in">
+                  <div>
+                    <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckSquare className="w-10 h-10 text-emerald-600" />
+                    </div>
                   </div>
-                  <p className="text-gray-500 mb-4">All caught up! No tasks for today.</p>
-                  <button 
-                    onClick={() => navigate('/tasks')}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium mx-auto"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Create New Task
-                  </button>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">All Caught Up! 🎉</h3>
+                  <p className="text-gray-600 mb-6">No tasks for today. Time to relax or create something new!</p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button 
+                      onClick={() => navigate('/tasks')}
+                      className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 font-medium mx-auto"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Create New Task
+                    </button>
+                    <button 
+                      onClick={() => navigate('/projects')}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium mx-auto flex items-center gap-2"
+                    >
+                      <Rocket className="w-5 h-5" />
+                      Browse Projects
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -274,11 +287,14 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               </h2>
               <div className="space-y-4">
                 {upcomingDeadlines.length === 0 ? (
-                  <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Target className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <p className="text-gray-500">No upcoming deadlines. Enjoy the calm!</p>
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center animate-fade-in">
+              <div>
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Coffee className="w-10 h-10 text-indigo-600" />
+                </div>
+              </div>
+                    <h4 className="font-semibold text-gray-900 mb-1">No Deadlines</h4>
+                    <p className="text-sm text-gray-600">Enjoy the calm! ☕</p>
                   </div>
                 ) : (
                   upcomingDeadlines.map((deadline, index) => (
@@ -319,8 +335,14 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               </h2>
               <div className="bg-white rounded-xl border border-gray-200 p-6">
                 {recentActivity.length === 0 ? (
-                  <div className="text-center text-gray-500 py-4">
-                    <p>No recent activity.</p>
+                  <div className="bg-white p-8 rounded-xl border border-gray-200 text-center animate-fade-in">
+                    <div>
+                      <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Activity className="w-8 h-8 text-purple-600" />
+                      </div>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-1">No Activity Yet</h4>
+                    <p className="text-sm text-gray-600">Your recent actions will appear here</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -349,7 +371,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => navigate('/projects')}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left"
+                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left hover-lift"
                 >
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
                     <Code className="w-6 h-6 text-blue-600" />
@@ -360,7 +382,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
 
                 <button
                   onClick={() => navigate('/tasks')}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left"
+                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left hover-lift"
                 >
                   <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
                     <CheckSquare className="w-6 h-6 text-green-600" />
@@ -371,7 +393,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
 
                 <button
                   onClick={() => navigate('/notes')}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left"
+                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left hover-lift"
                 >
                   <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
                     <FileText className="w-6 h-6 text-purple-600" />
@@ -382,7 +404,7 @@ const DevHubDashboard: React.FC<DevHubDashboardProps> = ({
 
                 <button
                   onClick={() => navigate('/tools')}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left"
+                  className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group text-left hover-lift"
                 >
                   <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-200 transition-colors">
                     <Wrench className="w-6 h-6 text-orange-600" />

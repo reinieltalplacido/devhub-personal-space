@@ -1,0 +1,12 @@
+[33mba7742d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to ba7742d
+[33mbe27dcb[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: Improved the Landing Page
+[33m861f048[m HEAD@{2}: commit: fix: error with useNavigate and router context (AppRoutes refactor)
+[33mdf2bc83[m HEAD@{3}: commit: chore: final sync before deploy - onboarding SPA flow and analytics
+[33m94349c6[m HEAD@{4}: commit: chore: add vercel.json for React Router SPA routing support
+[33m1690f66[m HEAD@{5}: commit: chore: update docs and deployment instructions for Vercel and custom domains
+[33m2c6886a[m HEAD@{6}: commit: rework: top header - removed search and icons, added live time/date display to all main pages
+[33m3d100d0[m HEAD@{7}: commit: Rework UI
+[33mf732764[m HEAD@{8}: commit: Update title to Devhub
+[33m8c756cb[m HEAD@{9}: commit (merge): Merge remote changes and add new components
+[33m0ae027e[m HEAD@{10}: commit: Projects, Task and Learning Added
+[33m8ed3dbc[m HEAD@{11}: clone: from https://github.com/reinieltalplacido/devhub-personal-space.git

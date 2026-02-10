@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import {
-  Home, ChevronRight, Bell, Star, MoreVertical, Plus, Trash2, Edit, CheckCircle, Search
+  Home, ChevronRight, Bell, Star, MoreVertical, Plus, Trash2, Edit, CheckCircle, Search, Sparkles, ListTodo, Loader
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -32,6 +32,7 @@ const Tasks: React.FC<TasksProps> = ({
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState<Task | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [celebratingTaskId, setCelebratingTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -71,6 +72,13 @@ const Tasks: React.FC<TasksProps> = ({
   const handleDrop = (e: React.DragEvent, newStatus: Task['status']) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('taskId');
+    const oldStatus = e.dataTransfer.getData('taskStatus');
+
+    // Celebrate if task moved to done
+    if (newStatus === 'done' && oldStatus !== 'done') {
+      setCelebratingTaskId(taskId);
+      setTimeout(() => setCelebratingTaskId(null), 600);
+    }
 
     setTasks(tasks.map(task => 
       task.id === taskId ? { ...task, status: newStatus } : task
@@ -158,13 +166,24 @@ const Tasks: React.FC<TasksProps> = ({
               >
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">To Do ({tasksTodo.length})</h2>
                 <div className="space-y-4">
-                  {tasksTodo.map(task => (
-                    <div
-                      key={task.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
-                    >
+                  {tasksTodo.length === 0 ? (
+                    <div className="text-center py-8 animate-fade-in">
+                      <div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <ListTodo className="w-8 h-8 text-gray-400" />
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500 mb-2">No tasks to do</p>
+                      <p className="text-xs text-gray-400">Drag tasks here or create new ones</p>
+                    </div>
+                  ) : (
+                    tasksTodo.map(task => (
+                      <div
+                        key={task.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, task.id, task.status)}
+                        className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow animate-slide-up"
+                      >
                       <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
                          <p className="text-sm text-gray-600">{task.description}</p>
@@ -179,7 +198,8 @@ const Tasks: React.FC<TasksProps> = ({
                            </button>
                        </div>
                     </div>
-                  ))}
+                 ))
+               )}
                 </div>
               </div>
 
@@ -190,13 +210,24 @@ const Tasks: React.FC<TasksProps> = ({
               >
                 <h2 className="text-xl font-semibold text-indigo-800 mb-4">In Progress ({tasksInProgress.length})</h2>
                 <div className="space-y-4">
-                   {tasksInProgress.map(task => (
-                    <div
-                      key={task.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
-                    >
+                  {tasksInProgress.length === 0 ? (
+                    <div className="text-center py-8 animate-fade-in">
+                      <div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Loader className="w-8 h-8 text-indigo-500" />
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500 mb-2">No tasks in progress</p>
+                      <p className="text-xs text-gray-400">Drag tasks here to start working</p>
+                    </div>
+                  ) : (
+                    tasksInProgress.map(task => (
+                      <div
+                        key={task.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, task.id, task.status)}
+                        className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow animate-slide-up"
+                      >
                        <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
                          <p className="text-sm text-gray-600">{task.description}</p>
@@ -211,7 +242,8 @@ const Tasks: React.FC<TasksProps> = ({
                            </button>
                        </div>
                     </div>
-                  ))}
+                  ))
+               )}
                 </div>
               </div>
 
@@ -222,13 +254,26 @@ const Tasks: React.FC<TasksProps> = ({
               >
                 <h2 className="text-xl font-semibold text-green-800 mb-4">Done ({tasksDone.length})</h2>
                  <div className="space-y-4">
-                   {tasksDone.map(task => (
-                    <div
-                      key={task.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, task.id, task.status)}
-                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow"
-                    >
+                  {tasksDone.length === 0 ? (
+                    <div className="text-center py-8 animate-fade-in">
+                      <div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Sparkles className="w-8 h-8 text-green-500" />
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500 mb-2">No completed tasks</p>
+                      <p className="text-xs text-gray-400">Drag finished tasks here</p>
+                    </div>
+                  ) : (
+                    tasksDone.map(task => (
+                     <div
+                       key={task.id}
+                       draggable
+                       onDragStart={(e) => handleDragStart(e, task.id, task.status)}
+                       className={`bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-grab flex justify-between items-center hover:shadow-md transition-shadow animate-slide-up ${
+                         celebratingTaskId === task.id ? 'animate-celebrate' : ''
+                       }`}
+                     >
                        <div>
                          <p className="font-semibold text-gray-900">{task.title || 'No Title'}</p>
                          <p className="text-sm text-gray-600">{task.description}</p>
@@ -243,7 +288,8 @@ const Tasks: React.FC<TasksProps> = ({
                            </button>
                        </div>
                     </div>
-                  ))}
+                 ))
+               )}
                 </div>
               </div>
 
